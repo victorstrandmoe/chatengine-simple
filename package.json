@@ -1,0 +1,21 @@
+{
+  "name": "chatengine-simple-demo",
+  "version": "1.0.0",
+  "description": "Chat App",
+  "main": "app.js",
+  "scripts": {
+    "start": "http-server . -a localhost -p 8000 -c-1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chat-engine": "^0.9.21",
+    "chat-engine-online-user-search": "0.0.11",
+    "chat-engine-random-username": "0.0.6",
+    "chat-engine-typing-indicator": "0.0.10",
+    "angular-route": "1.7.x"
+  },
+  "devDependencies": {
+    "http-server": "^0.11.1"
+  }
+}
