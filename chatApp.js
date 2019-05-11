@@ -2,6 +2,7 @@
 angular.module('chatApp', ['open-chat-framework'])
   .run(['$rootScope', 'ngChatEngine', function($rootScope, ngChatEngine) {
     $rootScope.ChatEngine = ChatEngineCore.create({
+      //created an account to get these keys at PubNub.com
       publishKey: 'pub-c-fb436d85-f479-435a-b35f-51b376621285',
       subscribeKey: 'sub-c-4a573aba-7333-11e9-bedf-bef46dd4efdc'
     }, {
@@ -11,11 +12,30 @@ angular.module('chatApp', ['open-chat-framework'])
     // bind open chat framework angular plugin
     ngChatEngine.bind($rootScope.ChatEngine);
   }])
-   .controller('chatAppController', function($scope) {
+  .controller('chatAppController', function($scope) {
+    
+    //connect to Chat Engine
     $scope.ChatEngine.connect(new Date().getTime(), {}, 'auth-key');
     $scope.ChatEngine.on('$.ready', (data) => {
       $scope.me = data.me;
-      // bind chat to updates
+      //replace uid with random username generator
+      $scope.me.plugin(ChatEngineCore.plugin['chat-engine-random-username']($scope.ChatEngine.global));
+      //define the chat sope  bind chat to updates
       $scope.chat = $scope.ChatEngine.global;
+
+      //enable username serch
+      $scope.chat.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({ prop: 'state.username' }))
+
+      $scope.search = function () {
+        let found = $scope.chat.onlineUserSearch.search($scope.mySearch);
+        // hide every user
+        for(let uuid in $scope.chat.users) {
+          $scope.chat.users[uuid].hideWhileSearch = true;
+        }
+        // show all found users
+        for(let i in found) {
+          $scope.chat.users[found[i].uuid].hideWhileSearch = false;
+        }
+    }
     });
   });
