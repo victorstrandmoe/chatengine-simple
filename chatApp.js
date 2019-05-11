@@ -11,6 +11,9 @@ angular.module('chatApp', ['open-chat-framework'])
     });
     // bind open chat framework angular plugin
     ngChatEngine.bind($rootScope.ChatEngine);
+
+    // create and initiate chats array
+    $rootScope.chats = [];
   }])
   .controller('chatAppController', function($scope) {
     
@@ -23,7 +26,16 @@ angular.module('chatApp', ['open-chat-framework'])
       //define the chat sope  bind chat to updates
       $scope.chat = $scope.ChatEngine.global;
 
-      //enable username serch
+      // listener for when an invite is being sent out
+      $scope.me.direct.on('$.invite', (payload) => {
+        let chat = new $scope.ChatEngine.Chat(payload.data.channel);
+        chat.onAny((a,b) => {
+          console.log(a);
+        });
+        // create a new chat 
+        $scope.chats.push(chat);
+      });
+      //enable username search
       $scope.chat.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({ prop: 'state.username' }))
 
       $scope.search = function () {
@@ -36,6 +48,23 @@ angular.module('chatApp', ['open-chat-framework'])
         for(let i in found) {
           $scope.chat.users[found[i].uuid].hideWhileSearch = false;
         }
+
+
     }
+
+      // create a new chat taking another user as parameter
+    $scope.newChat = function(user) {
+      // define a channel
+      let chat = new Date().getTime();
+      // create a new chat with that channel
+      let newChat = new $scope.ChatEngine.Chat(chat);
+      // we need to auth ourselves before we can invite others
+      newChat.on('$.connected', () => {
+        // this fires a private invite to the user
+        newChat.invite(user);
+        // add the chat to the list
+        $scope.chats.push(newChat);
+      });
+    };
     });
   });
