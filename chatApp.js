@@ -16,7 +16,6 @@ angular.module('chatApp', ['open-chat-framework'])
     $rootScope.chats = [];
   }])
   .controller('chatAppController', function($scope) {
-    
     //connect to Chat Engine
     $scope.ChatEngine.connect(new Date().getTime(), {}, 'auth-key');
     $scope.ChatEngine.on('$.ready', (data) => {
@@ -25,7 +24,6 @@ angular.module('chatApp', ['open-chat-framework'])
       $scope.me.plugin(ChatEngineCore.plugin['chat-engine-random-username']($scope.ChatEngine.global));
       //define the chat sope  bind chat to updates
       $scope.chat = $scope.ChatEngine.global;
-
       // listener for when an invite is being sent out
       $scope.me.direct.on('$.invite', (payload) => {
         let chat = new $scope.ChatEngine.Chat(payload.data.channel);
@@ -37,7 +35,6 @@ angular.module('chatApp', ['open-chat-framework'])
       });
       //enable username search
       $scope.chat.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({ prop: 'state.username' }))
-
       $scope.search = function () {
         let found = $scope.chat.onlineUserSearch.search($scope.mySearch);
         // hide every user
@@ -48,10 +45,7 @@ angular.module('chatApp', ['open-chat-framework'])
         for(let i in found) {
           $scope.chat.users[found[i].uuid].hideWhileSearch = false;
         }
-
-
     }
-
       // create a new chat taking another user as parameter
     $scope.newChat = function(user) {
       // define a channel
@@ -85,5 +79,10 @@ angular.module('chatApp', ['open-chat-framework'])
       // add the message to the array
       $scope.messages.push(payload);
     });
+      // leave a chatroom and remove from global chat list
+    $scope.leave = function (index) {
+      $scope.chat.leave();
+      $scope.chats.splice(index, 1);
+    };
   });
   ;
