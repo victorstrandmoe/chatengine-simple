@@ -84,17 +84,17 @@ angular.module('chatApp', ['open-chat-framework'])
       $scope.chat.leave();
       $scope.chats.splice(index, 1);
     };
-    //  // find an user name from global list
-    // $scope.searchFromGlobal = function () {
-    //   if($scope.mySearchFromGlobal) {
-    //     $scope.users = $scope.ChatEngine.global.onlineUserSearch.search($scope.mySearchFromGlobal);
-    //   } else {
-    //     $scope.users = [];
-    //   }
-    // };
-    // // invite to user to join
-    // $scope.invite = function (user) {
-    //   $scope.chat.invite(user);
-    // };
+     // find an user name from global list
+    $scope.searchFromGlobal = function () {
+      if($scope.mySearchFromGlobal) {
+        $scope.users = $scope.ChatEngine.global.onlineUserSearch.search($scope.mySearchFromGlobal);
+      } else {
+        $scope.users = [];
+      }
+    };
+    // invite to user to join
+    $scope.invite = function (user) {
+      $scope.chat.invite(user);
+    };
   });
   ;
