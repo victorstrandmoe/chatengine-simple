@@ -16,6 +16,8 @@ angular.module('chatApp', ['open-chat-framework'])
     $rootScope.chats = [];
   }])
   .controller('chatAppController', function($scope) {
+    // //define loading bool and initial value to true
+    // $scope.loading = true;
     //connect to Chat Engine
     $scope.ChatEngine.connect(new Date().getTime(), {}, 'auth-key');
     $scope.ChatEngine.on('$.ready', (data) => {
@@ -30,7 +32,7 @@ angular.module('chatApp', ['open-chat-framework'])
         chat.onAny((a,b) => {
           console.log(a);
         });
-        // create a new chat 
+        //create a new chat
         $scope.chats.push(chat);
       });
       //enable username search
@@ -48,6 +50,7 @@ angular.module('chatApp', ['open-chat-framework'])
     }
       // create a new chat taking another user as parameter
     $scope.newChat = function(user) {
+      // $scope.loading = true;
       // define a channel
       let chat = new Date().getTime();
       // create a new chat with that channel
@@ -58,8 +61,13 @@ angular.module('chatApp', ['open-chat-framework'])
         newChat.invite(user);
         // add the chat to the list
         $scope.chats.push(newChat);
+    
+        // $scope.loading = false;
       });
     };
+    //finished connecting to ChatEngine and ready to use
+    // $scope.loading = false;
+
     });
   })
   .controller('chat', function($scope) {
@@ -94,7 +102,16 @@ angular.module('chatApp', ['open-chat-framework'])
     };
     // invite to user to join
     $scope.invite = function (user) {
+      //reset users to 0 to hide search results and clear searchbar
+      $scope.users = [];
+      $scope.mySearchFromGlobal = '';
       $scope.chat.invite(user);
     };
+     //Send hidden message of user being kicked
+    // $scope.kickUser = function(user) {
+    //   //add UUID to kickuser message
+    //   $scope.chat.emit('message', { text: 'kickuser' + user.uuid });
+    //   $scope.newMessage = '';
+    // }
   });
   ;
