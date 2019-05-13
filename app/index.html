@@ -84,20 +84,22 @@
                             </form>
                             </div>
                         </div>
-                        <div class="card-block" ng-if="!chat.minimize">
-                            <h6>Add a user to this chat</h6>
-                            <form ng-submit="searchFromGlobal()">
-                                <div class="input-group">
-                                    <input name="usernameSearchGlobal" type="text" class="form-control message"
-                                           placeholder="Add User" ng-change="searchFromGlobal()"
-                                           ng-model="mySearchFromGlobal">
-                                </div>
-                            </form>
-                            <ul class="list-group list-group-flush online-list-sub">
-                                <li class="list-group-item" ng-repeat="(uuid, user) in users">
-                                    <a href="#" ng-click="invite(user)"> {{user.state.username}}</a>
-                                </li>
-                            </ul>
+                        <div class="card-block">
+                            <div ng-hide="chat.minimize" class="ng-hide">
+                                <h6>Add a user to this chat</h6>
+                                <form ng-submit="searchFromGlobal()">
+                                    <div class="input-group">
+                                        <input name="usernameSearchGlobal" type="text" class="form-control message"
+                                               placeholder="Add User" ng-change="searchFromGlobal()"
+                                               ng-model="mySearchFromGlobal">
+                                    </div>
+                                </form>
+                                <ul class="list-group list-group-flush online-list-sub">
+                                    <li class="list-group-item" ng-repeat="(uuid, user) in users">
+                                        <a href="#" ng-click="invite(user)"> {{user.state.username}}</a>
+                                    </li>
+                                </ul>
+                        </div>
                         </div>    
                     </div>
                     </div>
