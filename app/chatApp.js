@@ -98,11 +98,11 @@ angular.module('chatApp', ['open-chat-framework'])
       $scope.chats.splice(index, 1);
     };
     //minimize the chatroom 
-    $scope.minimize = function () {
+    $scope.minimizeChat = function () {
       $scope.chat.minimize = true;
     };
      //maximize the chatroom 
-    $scope.maximize = function () {
+    $scope.maximizeChat = function () {
       $scope.chat.minimize = false;
     };
      //search for user  from global list

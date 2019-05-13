@@ -44,7 +44,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="loader" ng-if="loading"></div> -->
         <div class="col-md-6">
             <div id="chats" class="row" ng-repeat="chat in chats" ng-controller="chat">
                 <div class="chat col-xs-12">
@@ -62,18 +61,17 @@
                             <div class="col-sm-6 text-right">
                              <div class="toolbar">
                                 <a href="" ng-click="leave($index)" class="close">x</a>
-                                <a href="" ng-click="minimize()" class="close" ng-if="!chat.minimize">-</a>
-                                <a href="" ng-click="maximize()" class="close" ng-if="chat.minimize">+</a>
+                                <a href="" ng-click="minimizeChat()" class="close" ng-if="!chat.minimize">-</a>
+                                <a href="" ng-click="maximizeChat()" class="close" ng-if="chat.minimize">+</a>
                              </div>
                             </div>
                         </div>
-                        <div class="card-block" ng-if="!chat.minimize">
-                            <div>
-                                <div ng-repeat="message in messages" ng-class="{'hide-username': message.sameUser, 'text-xs-right': !message.isSelf}">
-                                    <p class="text-muted username">{{message.sender.state.username}}</p>
-                                    <p ng-bind="message.timeToken | date:'MM/dd/yyyy'"></p>
-                                    <p>{{message.data.text}}</p>
-                                </div>
+                        <div class="card-block">
+                            <div ng-hide="chat.minimize" class="ng-hide">
+                            <div ng-repeat="message in messages" ng-class="{'hide-username': message.sameUser, 'text-xs-right': !message.isSelf}">
+                               <p class="text-muted username">{{message.sender.state.username}}</p>
+                               <p ng-bind="message.timeToken | date:'MM/dd/yyyy'"></p>
+                               <p>{{message.data.text}}</p>
                             </div>
                             <p class="typing text-muted"></p>
                             <form class="send-message" ng-submit="sendMessage()" id="chat-form">     
@@ -82,9 +80,9 @@
                                     <span class="input-group-btn">
                                         <button class="btn btn-primary" type="submit">Send</button>
                                     </span>
-
                                 </div>
                             </form>
+                            </div>
                         </div>
                         <div class="card-block" ng-if="!chat.minimize">
                             <h6>Add a user to this chat</h6>
