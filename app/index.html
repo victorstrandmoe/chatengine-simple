@@ -18,12 +18,13 @@
         <div class="row">
             <div class="col-md-6">
                <div class="card">
-                <div class="card-block">
+                <div class="card-header">
                     <h4 class="card-title">ChatEngine</h4>
                     <p class="card-text">Your are {{me.state.username}} with uuid {{me.uuid}}</p>
                 </div>
-                <div class = "card-block">
+                <div class = "card-block" id="instructions">
                     <h5>Online Users</h5>
+                    <p class="card-text">Click on a user you want to open a chatroom with. Once inside a chatroom, you can invite more users to join!</p>
                 </div>
                 <ul id="online-list" class="list-group list-group-flush">
                     <li id="new_chat_select_list" class="list-group-item" ng-repeat="(uuid, user) in chat.users" ng-hide="user.hideWhileSearch" ng-click="newChat(user)" ng-mouseover="hoverActive=true" ng-mouseleave="hoverActive=false" ng-style="hoverActive ? {'background-color': '#dde5ff'} : {}">
@@ -34,7 +35,7 @@
                     <form class="send-message" ng-submit="search()">
                         <div class="input-group">
                             <input id="usernameSearch" type="text" class="form-control message"
-                                   placeholder="Search for Username" ng-change="search()" ng-model="mySearch">
+                                   placeholder="search username" ng-change="search()" ng-model="mySearch">
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="submit">Search</button>
                             </span>
@@ -50,20 +51,29 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="col-sm-6">
-                                <span>Have a chat with</span>
-                               <span ng-repeat="(uuid, user) in chat.users">, {{user.state.username}}</span>                                
+                                <ul class="active-chat" >
+                                <h3>Chat #{{$index + 1}}</h5>
+                                <h6>Active users</h6>
+                                <li ng-repeat="(uuid, user) in chat.users">
+                                       <span class="active-chat">{{user.state.username}}</span>
+                                    </li>
+                                </ul>
                             </div>
                             <div class="col-sm-6 text-right">
+                                <div class="toolbar">
                                 <a href="" ng-click="leave($index)" class="close">x</a>
+                                <a href="" ng-click="minimize()" class="close" ng-if="!chat.minimize">-</a>
+                                <a href="" ng-click="maximize()" class="close" ng-if="chat.minimize">+</a>
+                            </div>
                             </div>
                         </div>
-                        <ul class="list-group list-group-flush online-list-sub">
+                        <ul class="list-group list-group-flush online-list-sub" ng-if="!chat.minimize">
                             <li class="list-group-item" ng-repeat="(uuid, user) in chat.users"
                                 ng-hide="user.hideWhileSearch">
                                <span> {{user.state.username}}</span>
                             </li>
                         </ul>
-                        <div class="card-block">
+                        <div class="card-block" ng-if="!chat.minimize">
                             <div>
                                 <div ng-repeat="message in messages" ng-class="{'hide-username': message.sameUser, 'text-xs-right': !message.isSelf}">
                                     <p class="text-muted username">{{message.sender.state.username}}</p>
@@ -81,7 +91,7 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="card-block">
+                        <div class="card-block" ng-if="!chat.minimize">
                             <h6>Add a user to this chat</h6>
                             <form ng-submit="searchFromGlobal()">
                                 <div class="input-group">

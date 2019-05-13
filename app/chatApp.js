@@ -74,6 +74,8 @@ angular.module('chatApp', ['open-chat-framework'])
   .controller('chat', function($scope) {
     //initiate messages scope
     $scope.messages = [];
+    //default value of minimize
+    $scope.chat.minimize = false;
     //send message from user input
     $scope.sendMessage = function () {
       $scope.chat.emit('message', { text: $scope.newMessage });
@@ -92,6 +94,16 @@ angular.module('chatApp', ['open-chat-framework'])
     $scope.leave = function (index) {
       $scope.chat.leave();
       $scope.chats.splice(index, 1);
+    };
+    //minimize the chatroom 
+    $scope.minimize = function () {
+      console.log('minimize');
+      console.log($scope.chat);
+      $scope.chat.minimize = true;
+    };
+     //maximize the chatroom 
+    $scope.maximize = function () {
+      $scope.chat.minimize = false;
     };
      //search for user  from global list
     $scope.searchFromGlobal = function () {

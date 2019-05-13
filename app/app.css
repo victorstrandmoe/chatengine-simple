@@ -6,3 +6,16 @@
 form#chat-form{
 		margin-top: 50vh;
 }
+div.card-header{
+	background-color:#dde5ff;
+}
+ul.active-chat{
+	list-style-type: none;
+}
+span.active-chat{
+	font-size:12px;
+	}
+.toolbar a{
+   margin-left:5px;
+   margin-right: 5px;
+}
