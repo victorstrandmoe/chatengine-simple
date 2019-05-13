@@ -11,6 +11,7 @@ div.card-header{
 }
 ul.active-chat{
 	list-style-type: none;
+	background-color: #dde5ff;
 }
 span.active-chat{
 	font-size:12px;

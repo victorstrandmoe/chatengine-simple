@@ -13,6 +13,7 @@ angular.module('chatApp', ['open-chat-framework'])
 
     // create and initiate chats array
     $rootScope.chats = [];
+    //use rootscope because needs to be accessed from more than 1 controller
   }])
   //contoller handling the main app view
   .controller('chatAppController', function($scope) {
@@ -68,6 +69,7 @@ angular.module('chatApp', ['open-chat-framework'])
         $scope.chats.push(newChat);
       });
     };
+
     });
   })
   //chat controllr
@@ -87,7 +89,7 @@ angular.module('chatApp', ['open-chat-framework'])
       payload.sameUser = $scope.messages.length > 0 && payload.sender.uuid == $scope.messages[$scope.messages.length - 1].sender.uuid;
       //check is message is sent by himself
       payload.isSelf = payload.sender.uuid == $scope.me.uuid;
-      //appen to messagesscope
+      //append to messagesscope
       $scope.messages.push(payload);
     });
     //leave the chatroom and remove from chats scope
@@ -97,8 +99,6 @@ angular.module('chatApp', ['open-chat-framework'])
     };
     //minimize the chatroom 
     $scope.minimize = function () {
-      console.log('minimize');
-      console.log($scope.chat);
       $scope.chat.minimize = true;
     };
      //maximize the chatroom 
@@ -108,6 +108,7 @@ angular.module('chatApp', ['open-chat-framework'])
      //search for user  from global list
     $scope.searchFromGlobal = function () {
       if($scope.mySearchFromGlobal) {
+        //use chatengine search function to search for all online users in this instance
         $scope.users = $scope.ChatEngine.global.onlineUserSearch.search($scope.mySearchFromGlobal);
       } else {
         $scope.users = [];

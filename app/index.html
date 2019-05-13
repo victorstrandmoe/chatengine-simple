@@ -60,19 +60,13 @@
                                 </ul>
                             </div>
                             <div class="col-sm-6 text-right">
-                                <div class="toolbar">
+                             <div class="toolbar">
                                 <a href="" ng-click="leave($index)" class="close">x</a>
                                 <a href="" ng-click="minimize()" class="close" ng-if="!chat.minimize">-</a>
                                 <a href="" ng-click="maximize()" class="close" ng-if="chat.minimize">+</a>
-                            </div>
+                             </div>
                             </div>
                         </div>
-                        <ul class="list-group list-group-flush online-list-sub" ng-if="!chat.minimize">
-                            <li class="list-group-item" ng-repeat="(uuid, user) in chat.users"
-                                ng-hide="user.hideWhileSearch">
-                               <span> {{user.state.username}}</span>
-                            </li>
-                        </ul>
                         <div class="card-block" ng-if="!chat.minimize">
                             <div>
                                 <div ng-repeat="message in messages" ng-class="{'hide-username': message.sameUser, 'text-xs-right': !message.isSelf}">
@@ -82,12 +76,13 @@
                                 </div>
                             </div>
                             <p class="typing text-muted"></p>
-                            <form class="send-message" ng-submit="sendMessage(chat)" id="chat-form">
+                            <form class="send-message" ng-submit="sendMessage()" id="chat-form">     
                                 <div class="input-group">
-                                    <input id="usernameMessage"  ng-model="newMessage" type="text" class="form-control message" placeholder="Your Message...">
+                                    <input id="usernameMessage"  ng-model="newMessage" type="text" class="form-control message" placeholder="Your Message..."></input>
                                     <span class="input-group-btn">
                                         <button class="btn btn-primary" type="submit">Send</button>
                                     </span>
+
                                 </div>
                             </form>
                         </div>
