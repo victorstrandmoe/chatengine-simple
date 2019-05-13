@@ -25,11 +25,12 @@ angular.module('chatApp', ['open-chat-framework'])
       //display user with random usernamegenerator 
       $scope.me.plugin(ChatEngineCore.plugin['chat-engine-random-username']($scope.ChatEngine.global));   
       
-      //TODO: Will allow own username creation
       
+      //TODO: Will allow own username creation
+
+
       //initiate the chat scope with data from ChatEngine
       $scope.chat = $scope.ChatEngine.global;
-
       // listener for when an invite is being sent out
       $scope.me.direct.on('$.invite', (payload) => {
         let chat = new $scope.ChatEngine.Chat(payload.data.channel);
@@ -41,7 +42,6 @@ angular.module('chatApp', ['open-chat-framework'])
       });
       //enable username search
       $scope.chat.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({ prop: 'state.username' }));
-      
       //the search function
       $scope.search = function () {
         //search input data from user into useable var
@@ -54,7 +54,8 @@ angular.module('chatApp', ['open-chat-framework'])
         for(let i in found) {
           $scope.chat.users[found[i].uuid].hideWhileSearch = false;
         }
-    }
+      }
+    
       //invites user to new chat and opens new view
     $scope.newChat = function(user) {
       //set a channel id
@@ -71,6 +72,7 @@ angular.module('chatApp', ['open-chat-framework'])
     };
 
     });
+
   })
   //chat controllr
   .controller('chat', function($scope) {
@@ -104,6 +106,10 @@ angular.module('chatApp', ['open-chat-framework'])
      //maximize the chatroom 
     $scope.maximizeChat = function () {
       $scope.chat.minimize = false;
+    };
+    //leave the chatroom and remove from chats scope
+    $scope.deleteChatContent = function (index) {
+      $scope.messages=[];
     };
      //search for user  from global list
     $scope.searchFromGlobal = function () {
