@@ -28,7 +28,8 @@
                 </div>
                 <ul id="online-list" class="list-group list-group-flush">
                     <li id="new_chat_select_list" class="list-group-item" ng-repeat="(uuid, user) in chat.users" ng-hide="user.hideWhileSearch" ng-click="newChat(user)" ng-mouseover="hoverActive=true" ng-mouseleave="hoverActive=false" ng-style="hoverActive ? {'background-color': '#dde5ff'} : {}">
-                        <a href="">{{user.state.username}} ({{user.uuid}})</a>
+                        <a href="" ng-if="user.state.username">{{user.state.username}} ({{user.uuid}})</a>
+                        <a href="" ng-if="!user.state.username">anonymous ({{user.uuid}})</a>
                     </li>
                 </ul>
                 <div class="card-block">
