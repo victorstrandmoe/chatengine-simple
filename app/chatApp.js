@@ -1,5 +1,5 @@
 
-angular.module('chatApp', ['open-chat-framework', 'firebase'])
+angular.module('chatApp', ['open-chat-framework'])
   .run(['$rootScope', 'ngChatEngine', function($rootScope, ngChatEngine) {
     $rootScope.ChatEngine = ChatEngineCore.create({
       //created an account to get these keys at PubNub.com
@@ -13,30 +13,30 @@ angular.module('chatApp', ['open-chat-framework', 'firebase'])
 
     // create and initiate chats array
     $rootScope.chats = [];
-    $rootScope.firebaseData = [];
+    //use rootscope because needs to be accessed from more than 1 controller
   }])
   //contoller handling the main app view
-  .controller('chatAppController', function($scope, $rootScope, $firebaseObject) {
+  .controller('chatAppController', function($scope) {
     //connect the model to PubNub servers
     $scope.ChatEngine.connect(new Date().getTime(), {}, 'auth-key');
     //lisener for when gets a callback
     $scope.ChatEngine.on('$.ready', (data) => {
       $scope.me = data.me;
       //display user with random usernamegenerator 
-      $scope.me.plugin(ChatEngineCore.plugin['chat-engine-random-username']($scope.ChatEngine.global));       
+      $scope.me.plugin(ChatEngineCore.plugin['chat-engine-random-username']($scope.ChatEngine.global));   
+      
+      
       //TODO: Will allow own username creation
+
 
       //initiate the chat scope with data from ChatEngine
       $scope.chat = $scope.ChatEngine.global;
       // listener for when an invite is being sent out
       $scope.me.direct.on('$.invite', (payload) => {
         let chat = new $scope.ChatEngine.Chat(payload.data.channel);
-        console.log('INVITE');
-        console.log(chat);
         chat.onAny((a,b) => {
           console.log(a);
         });
-
         //add chat to chats scope for DOM updates
         $scope.chats.push(chat);
       });
@@ -55,21 +55,13 @@ angular.module('chatApp', ['open-chat-framework', 'firebase'])
           $scope.chat.users[found[i].uuid].hideWhileSearch = false;
         }
       }
+    
       //invites user to new chat and opens new view
     $scope.newChat = function(user) {
       //set a channel id
       let chat = new Date().getTime();
-      // //create new chat
-      // let newChat = new $scope.ChatEngine.Chat(chat);
-      //create firebase key to be used as name
-      var firebaseKey = firebase.database().ref('/chats/').push().key;
-      
-        //create new chat. add firebase chat key inside the invitation
-      let newChat = new $scope.ChatEngine.Chat('public-chat', false, true,{
-            name: firebaseKey
-        });
-      console.log(newChat);
-
+      //create new chat
+      let newChat = new $scope.ChatEngine.Chat(chat);
       //authenticate and handle callback
       newChat.on('$.connected', () => {
         //send invite to 'user' 
@@ -77,29 +69,9 @@ angular.module('chatApp', ['open-chat-framework', 'firebase'])
         //add chat to chats scope
         $scope.chats.push(newChat);
       });
-
-      //send first to Firebase to add key to the invitation
-      addChatToFirebase(newChat,firebaseKey);
-
     };
-    function addChatToFirebase(newChat, key) {
-        //create object
-        var newChatObj = {
-          uid: key,
-          name: newChat.name,
-          channel: newChat.channel,
-          creator: $scope.me.uuid,
-          users:[$scope.me.uuid],
-          messages:[]
-        };
-        //send
-        firebase.database().ref('/chats/' + key).update(newChatObj);
 
-        //keep track of firebase chat ID's
-        $rootScope.firebaseData.chats=[];
-        $rootScope.firebaseData.chats.push(newChatObj);
-      }
-  });
+    });
 
   })
   //chat controllr
@@ -109,10 +81,8 @@ angular.module('chatApp', ['open-chat-framework', 'firebase'])
     //default value of minimize
     $scope.chat.minimize = false;
     //send message from user input
-    $scope.sendMessage = function (index) {
+    $scope.sendMessage = function () {
       $scope.chat.emit('message', { text: $scope.newMessage });
-      // Get a reference to tfirebase database
-      writeMessageToFirebase($scope.newMessage, $rootScope.firebaseData.chats[$index]);
       $scope.newMessage = '';
     };
     //listener for when message is received
@@ -124,27 +94,6 @@ angular.module('chatApp', ['open-chat-framework', 'firebase'])
       //append to messagesscope
       $scope.messages.push(payload);
     });
-      function writeMessageToFirebase(message, chatId) {
-        console.log('WRITE MESSAGE');
-        console.log('MESSAGE');
-        console.log(message);
-        console.log('CHAT ID');
-        console.log(chatId);
-         //get key
-        var newChatKey = firebase.database().ref('/chats/').push().key;
-        //create object
-        var newChatObj = {
-          uid: newChatKey,
-          name: newChat.name,
-          channel: newChat.channel,
-          creator: $scope.me.uuid,
-          messages:[]
-        };
-        //send
-        firebase.database().ref('/chats/' + newChatKey).update(newChatObj);
-        $rootScope.firebaseData.chats=[];
-        $rootScope.firebaseData.chats.push(newChatObj);
-}
     //leave the chatroom and remove from chats scope
     $scope.leave = function (index) {
       $scope.chat.leave();
