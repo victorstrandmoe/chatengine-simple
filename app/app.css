@@ -26,4 +26,5 @@ img#delete{
    margin-top: 20px;
    width: 22px;
    height: 22px;
+   cursor: pointer;
 }
