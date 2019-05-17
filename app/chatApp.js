@@ -10,10 +10,8 @@ angular.module('chatApp', ['open-chat-framework'])
       globalChannel: 'chat-engine-angular-simple'
     });
     ngChatEngine.bind($rootScope.ChatEngine);
-
     // create and initiate chats array
     $rootScope.chats = [];
-    //use rootscope because needs to be accessed from more than 1 controller
   }])
   //contoller handling the main app view
   .controller('chatAppController', function($scope) {
@@ -22,13 +20,13 @@ angular.module('chatApp', ['open-chat-framework'])
     //lisener for when gets a callback
     $scope.ChatEngine.on('$.ready', (data) => {
       $scope.me = data.me;
+      //when closing or refreshing the page, disconnects user from chat engine. 
+      //prevents having non-existing users being listen
+      window.onbeforeunload = function (event) {
+        $scope.ChatEngine.disconnect();
+      }
       //display user with random usernamegenerator 
       $scope.me.plugin(ChatEngineCore.plugin['chat-engine-random-username']($scope.ChatEngine.global));   
-      
-      
-      //TODO: Will allow own username creation
-
-
       //initiate the chat scope with data from ChatEngine
       $scope.chat = $scope.ChatEngine.global;
       // listener for when an invite is being sent out
@@ -55,19 +53,18 @@ angular.module('chatApp', ['open-chat-framework'])
           $scope.chat.users[found[i].uuid].hideWhileSearch = false;
         }
       }
-    
       //invites user to new chat and opens new view
-    $scope.newChat = function(user) {
-      //set a channel id
-      let chat = new Date().getTime();
-      //create new chat
-      let newChat = new $scope.ChatEngine.Chat(chat);
-      //authenticate and handle callback
-      newChat.on('$.connected', () => {
-        //send invite to 'user' 
-        newChat.invite(user);
-        //add chat to chats scope
-        $scope.chats.push(newChat);
+      $scope.newChat = function(user) {
+        //set a channel id
+        let chat = new Date().getTime();
+        //create new chat
+        let newChat = new $scope.ChatEngine.Chat(chat);
+        //authenticate and handle callback
+        newChat.on('$.connected', () => {
+          //send invite to 'user' 
+          newChat.invite(user);
+          //add chat to chats scope
+          $scope.chats.push(newChat);
       });
     };
 
@@ -94,11 +91,23 @@ angular.module('chatApp', ['open-chat-framework'])
       //append to messagesscope
       $scope.messages.push(payload);
     });
+    $scope.chat.on('$.offline.*', (payload) => {
+      //get  all object  keys and find the length to check the number of users
+      var chatKeys = Object.keys(payload.chat.users);
+      var length = chatKeys.length;
+      if(length <= 1){
+      //close  if chat size is 1
+      let systemChat = payload.chat;
+      var index = $scope.chats.indexOf(systemChat);
+      $scope.chats.splice(index, 1);  
+      }
+    });
     //leave the chatroom and remove from chats scope
     $scope.leave = function (index) {
       $scope.chat.leave();
       $scope.chats.splice(index, 1);
     };
+    
     //minimize the chatroom 
     $scope.minimizeChat = function () {
       $scope.chat.minimize = true;
